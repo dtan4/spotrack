@@ -25,6 +25,7 @@ module Spotrack
     desc "watch", "Watch spot requests"
     option :spot_request_ids, type: :string, desc: "List of IDs of spot requests", aliases: :s, required: true
     def watch
+      ec2 = Spotrack::EC2.new
       request_ids = options[:spot_request_ids].split(",")
 
       trap("INT") do
@@ -32,8 +33,31 @@ module Spotrack
         exit 0
       end
 
+      puts %w(
+        REQUEST_ID
+        BIDDING_PRICE
+        STATUS
+        INSTANCE_ID
+        UPDATE_TIME
+        LOGGED_TIME
+      ).join("\t")
+
       loop do
-        sleep 30
+        current_time = Time.now
+        requests = ec2.describe_spot_instance_requests(request_ids)
+
+        requests.each do |request|
+          puts [
+            request.spot_instance_request_id,
+            request.spot_price,
+            request.status.code,
+            request.instance_id,
+            request.status.update_time,
+            current_time,
+          ].join("\t")
+        end
+
+        sleep 15
       end
     end
 

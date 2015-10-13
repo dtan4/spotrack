@@ -16,6 +16,10 @@ module Spotrack
       ).spot_price_history[0].spot_price.to_f
     end
 
+    def describe_spot_instance_requests(request_ids)
+      @client.describe_spot_instance_requests(spot_instance_request_ids: request_ids).spot_instance_requests
+    end
+
     def request_spot_instances(availability_zone, instance_type, key_name, numbers, security_group_ids, spot_price, subnet_id)
       @client.request_spot_instances(
         request_spot_instances_option(availability_zone, instance_type, key_name, numbers, security_group_ids, spot_price, subnet_id)
