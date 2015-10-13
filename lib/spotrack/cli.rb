@@ -25,6 +25,8 @@ module Spotrack
     desc "watch", "Watch spot requests"
     option :spot_request_ids, type: :string, desc: "List of IDs of spot requests", aliases: :s, required: true
     def watch
+      $stdout.sync = true
+
       ec2 = Spotrack::EC2.new
       request_ids = options[:spot_request_ids].split(",")
 
