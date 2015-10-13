@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "spotrack"
+
+Spotrack::CLI.start(ARGV)
