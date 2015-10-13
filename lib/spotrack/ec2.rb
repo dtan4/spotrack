@@ -28,12 +28,12 @@ module Spotrack
 
     private
 
-    def ami_id(channel, region, type)
-      JSON.parse(open(ami_distributions_url(channel)).read)[region][type]
-    end
-
     def ami_distributions_url(channel)
       "https://coreos.com/dist/aws/aws-#{channel}.json"
+    end
+
+    def ami_id(channel, region, type)
+      JSON.parse(open(ami_distributions_url(channel)).read)[region][type]
     end
 
     def request_spot_instances_option(availability_zone, instance_type, key_name, numbers, security_group_ids, spot_price, subnet_id)
