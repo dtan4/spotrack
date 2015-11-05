@@ -3,6 +3,7 @@ module Spotrack
     AMI_REGION = "ap-northeast-1"
     AMI_TYPE = "hvm"
     COREOS_CHANNEL = "beta"
+    ONDEMAND_PRICE_URL = "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js"
     SPOT_INSTANCE_PRODUCT_DESCRIPTIONS = ["Linux/UNIX (Amazon VPC)"]
 
     def initialize(client = Aws::EC2::Client.new)
@@ -14,6 +15,17 @@ module Spotrack
         max_results: 1, product_descriptions: SPOT_INSTANCE_PRODUCT_DESCRIPTIONS, instance_types: [instance_type],
         availability_zone: availability_zone
       ).spot_price_history[0].spot_price.to_f
+    end
+
+    def current_ondemand_price(instance_type)
+      JSON.parse(
+        open(ONDEMAND_PRICE_URL).read.gsub(/.*callback\(/, "").gsub(/\);\z/, "").gsub(/([0-9a-zA-Z]*):/, "\"\\1\":"),
+        symbolize_names: true
+      )[:config][:regions]
+        .find { |region| region[:region] == ENV["AWS_REGION"] }[:instanceTypes]
+        .map { |instance_type| instance_type[:sizes] }
+        .flatten
+        .find { |size| size[:size] == instance_type }[:valueColumns][0][:prices][:USD]
     end
 
     def describe_spot_instance_requests(request_ids)

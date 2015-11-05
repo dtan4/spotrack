@@ -4,7 +4,12 @@ module Spotrack
     option :availability_zone, type: :string, desc: "Availability zone", aliases: :a
     option :instance_type, type: :string, desc: "Instance type", aliases: :i
     def current
-      puts current_spot_instance_price(options[:availability_zone], options[:instance_type])
+      spot_price = current_spot_instance_price(options[:availability_zone], options[:instance_type])
+      ondemand_price = current_ondemand_price(options[:instance_type])
+      percentage = (spot_price.to_f / ondemand_price.to_f) * 100
+
+      puts "Ondemand price: #{ondemand_price}"
+      puts "    Spot price: #{spot_price} (#{sprintf("%.2f", percentage)}%)"
     end
 
     desc "request", "Request spot instance(s)"
@@ -74,6 +79,10 @@ module Spotrack
 
     def current_spot_instance_price(availability_zone, instance_type)
       Spotrack::EC2.new.current_spot_instance_price(availability_zone, instance_type)
+    end
+
+    def current_ondemand_price(instance_type)
+      Spotrack::EC2.new.current_ondemand_price(instance_type)
     end
   end
 end
