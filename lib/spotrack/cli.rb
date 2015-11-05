@@ -1,5 +1,12 @@
 module Spotrack
   class CLI < Thor
+    desc "current", "Show current spot instance market price"
+    option :availability_zone, type: :string, desc: "Availability zone", aliases: :a
+    option :instance_type, type: :string, desc: "Instance type", aliases: :i
+    def current
+      puts current_spot_instance_price(options[:availability_zone], options[:instance_type])
+    end
+
     desc "request", "Request spot instance(s)"
     option :availability_zone, type: :string, desc: "Availability zone", aliases: :a
     option :instance_type, type: :string, desc: "Instance type", aliases: :i
@@ -66,8 +73,7 @@ module Spotrack
     private
 
     def current_spot_instance_price(availability_zone, instance_type)
-      Spotrack::EC2.
-new.current_spot_instance_price(availability_zone, instance_type)
+      Spotrack::EC2.new.current_spot_instance_price(availability_zone, instance_type)
     end
   end
 end

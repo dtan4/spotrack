@@ -23,9 +23,22 @@ Or install it yourself as:
 ```bash
 $ spotrack help
 Commands:
+  spotrack current                                       # Show current spot instance market price
   spotrack help [COMMAND]                                # Describe available commands or one specific command
   spotrack request                                       # Request spot instance(s)
   spotrack watch s, --spot-request-ids=SPOT_REQUEST_IDS  # Watch spot requests
+```
+
+### Show current spot instance market price (`spotrack current`)
+
+```bash
+$ spotrack help current
+Usage:
+  spotrack current
+
+Options:
+  a, [--availability-zone=AVAILABILITY_ZONE]  # Availability zone
+  i, [--instance-type=INSTANCE_TYPE]          # Instance type
 ```
 
 ### Request spot instance(s) (`spotrack request`)
